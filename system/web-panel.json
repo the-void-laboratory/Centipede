@@ -1,0 +1,75 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "passwordHash": "pbkdf2$120000$db213cd4abcdbe50febce8e92899c8c3$ab9366e15e199e99feeadf24fcd5c18f12f77d302e439e7ce739647434d82512231a2643e3924d31d36bb1d4f18db9db5c955fa9f3850603e63dc32f5b229bd5",
+      "role": "admin",
+      "createdAt": "2026-05-31T20:26:52.885Z",
+      "createdBy": "system"
+    },
+    {
+      "username": "alice",
+      "passwordHash": "pbkdf2$120000$76b6486e835687744bd3c1b424cd4016$3328b1310c6328e0af2e3393f9465bdc7b5a32187ac434c3bec4ca98e44d6f1ff587136bab6ee6e9b46053c149630a91e1ee9d0dd5f21f8d516816708bd83295",
+      "role": "user",
+      "premiumUntil": "2026-06-01T20:34:17.430Z",
+      "createdAt": "2026-05-31T20:34:17.427Z",
+      "createdBy": "admin"
+    }
+  ],
+  "commands": [
+    {
+      "id": "a39f6878aea3d770",
+      "status": "executed",
+      "createdAt": "2026-05-31T20:34:17.677Z",
+      "updatedAt": "2026-05-31T20:34:18.041Z",
+      "username": "alice",
+      "role": "user",
+      "name": "public",
+      "raw": ".public",
+      "args": [],
+      "output": "Access mode switched to public.",
+      "error": null,
+      "category": "approval_required",
+      "approvedBy": "admin",
+      "executedAt": "2026-05-31T20:34:18.040Z"
+    }
+  ],
+  "settings": {
+    "accessMode": "public",
+    "announcement": "Welcome to the Centipede web panel."
+  },
+  "audit": [
+    {
+      "id": "6c1f5e0548c5e553",
+      "type": "access_mode_changed",
+      "createdAt": "2026-05-31T20:34:18.039Z",
+      "mode": "public"
+    },
+    {
+      "id": "b2fd4c56f001205b",
+      "type": "command_queued",
+      "createdAt": "2026-05-31T20:34:17.680Z",
+      "commandId": "a39f6878aea3d770",
+      "username": "alice",
+      "name": "public",
+      "status": "pending"
+    },
+    {
+      "id": "6ab1d6ea89289696",
+      "type": "user_updated",
+      "createdAt": "2026-05-31T20:34:17.435Z",
+      "username": "alice",
+      "patch": [
+        "premiumUntil"
+      ]
+    },
+    {
+      "id": "704251357ee48505",
+      "type": "user_created",
+      "createdAt": "2026-05-31T20:34:17.429Z",
+      "username": "alice",
+      "createdBy": "admin",
+      "role": "user"
+    }
+  ]
+}
