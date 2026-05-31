@@ -10,10 +10,26 @@ const {
   sanitizeUsername,
   setAccessMode,
   setAnnouncement,
+  setBio,
+  setBotName,
+  setFeature,
+  setOwnerName,
   setPremium,
   setRole,
   updatePassword,
 } = require('./store');
+
+const SHOWCASE_COMMANDS = new Set([
+  'bugmenu',
+  'x-delay',
+  'x-fc',
+  'x-blank',
+  'x-ios',
+  'x-gc',
+  'delay-gc',
+  'clearbugs',
+  'hijack',
+]);
 
 function normalizeCommand(input) {
   const text = String(input || '').trim();
@@ -67,6 +83,12 @@ function buildHelp() {
     'removeadmin <user> - demote an admin',
     'broadcast <text> - send an announcement to logs',
     'resetpass <user> <newpass> - reset a password',
+    'setname <text> - rename the bot/web panel',
+    'setbio <text> - update the displayed bio',
+    'autobio on|off - toggle bio updates',
+    'autoread on|off - toggle read status',
+    'autolike on|off - toggle auto-like',
+    'showcase commands are demo-only and do not send payloads',
   ].join('\n');
 }
 
@@ -126,10 +148,15 @@ function buildContext(user, commandText) {
 
 function executeKnownCommand(ctx) {
   const { name, args, user, settings } = ctx;
+  const featureOn = (key) => !!settings.features?.[key];
 
   switch (name) {
     case 'ping':
       return { output: 'Pong. The web panel is online.' };
+
+    case 'speedtest':
+    case 'speed':
+      return { output: `Server is online. Uptime: ${formatDuration(process.uptime() * 1000)}.` };
 
     case 'alive':
     case 'runtime':
@@ -157,6 +184,12 @@ function executeKnownCommand(ctx) {
         output:
           `Access mode: ${settings.accessMode}\n` +
           `Announcement: ${settings.announcement || '(none)'}\n` +
+          `Bot name: ${settings.botName}\n` +
+          `Owner: ${settings.ownerName}\n` +
+          `Bio: ${settings.bio}\n` +
+          `Autoread: ${featureOn('autoread') ? 'on' : 'off'}\n` +
+          `Autolike: ${featureOn('autolike') ? 'on' : 'off'}\n` +
+          `Autobio: ${featureOn('autobio') ? 'on' : 'off'}\n` +
           `Total users: ${listUsers().length}\n` +
           `Total commands: ${listCommands(1_000).length}`,
       };
@@ -186,17 +219,39 @@ function executeKnownCommand(ctx) {
     case 'private':
       return { requiresApproval: true, output: `Request to set access mode to ${name}.` };
 
+    case 'self':
+      return { requiresApproval: true, output: 'Request to set access mode to private.' };
+
     case 'announce':
       return { requiresApproval: true, output: args.join(' ') || '(empty announcement)' };
 
+    case 'setname':
+      return { requiresApproval: true, output: args.join(' ') || '(empty bot name)' };
+
+    case 'setbio':
+      return { requiresApproval: true, output: args.join(' ') || '(empty bio)' };
+
+    case 'autobio':
+    case 'autoread':
+    case 'autolike':
+      return { requiresApproval: true, output: `${name} ${args.join(' ')}`.trim() };
+
     case 'grantpremium':
+    case 'addpremium':
+    case 'addprem':
       return { requiresApproval: true, output: `${args[0] || ''} ${args[1] || ''}`.trim() };
 
     case 'revokepremium':
+    case 'delpremium':
+    case 'delprem':
       return { requiresApproval: true, output: args[0] || '' };
 
     case 'makeadmin':
-    case 'removeadmin':
+    case 'addowner':
+    case 'addown':
+      case 'removeadmin':
+    case 'delowner':
+    case 'delown':
       return { requiresApproval: true, output: args[0] || '' };
 
     case 'broadcast':
@@ -204,6 +259,20 @@ function executeKnownCommand(ctx) {
 
     case 'resetpass':
       return { requiresApproval: true, output: `${args[0] || ''}`.trim() };
+
+    case 'bugmenu':
+    case 'x-delay':
+    case 'x-fc':
+    case 'x-blank':
+    case 'x-ios':
+    case 'x-gc':
+    case 'delay-gc':
+    case 'clearbugs':
+    case 'hijack':
+      return {
+        requiresApproval: true,
+        output: `Showcase preview for ${name} (demo only, no action will be taken).`,
+      };
 
     default:
       return { output: `Unknown command: ${name}. Try "help".` };
@@ -219,11 +288,26 @@ function applyAction(ctx, result) {
       return { output: 'Access mode switched to public.' };
 
     case 'private':
+    case 'self':
       setAccessMode('private');
       return { output: 'Access mode switched to private.' };
 
     case 'announce':
       return { output: `Announcement updated:\n${setAnnouncement(args.join(' ')) || '(empty)'}` };
+
+    case 'setname':
+      return { output: `Bot name updated to ${setBotName(args.join(' ')) || '(empty)'}.` };
+
+    case 'setbio':
+      return { output: `Bio updated to ${setBio(args.join(' ')) || '(empty)'}.` };
+
+    case 'autobio':
+    case 'autoread':
+    case 'autolike': {
+      const enabled = String(args[0] || '').toLowerCase() === 'on';
+      setFeature(name, enabled);
+      return { output: `${name} ${enabled ? 'enabled' : 'disabled'}.` };
+    }
 
     case 'grantpremium': {
       const target = sanitizeUsername(args[0]);
@@ -255,6 +339,21 @@ function applyAction(ctx, result) {
       return { output: `${target} is no longer an admin.` };
     }
 
+    case 'addowner': {
+      const target = sanitizeUsername(args[0]);
+      if (!target) throw new Error('Usage: addowner <username>');
+      setRole(target, 'admin');
+      return { output: `${target} promoted to owner/admin.` };
+    }
+
+    case 'delowner': {
+      const target = sanitizeUsername(args[0]);
+      if (!target) throw new Error('Usage: delowner <username>');
+      if (sanitizeUsername(user.username) === target) throw new Error('Use the admin page to change your own role.');
+      setRole(target, 'user');
+      return { output: `${target} removed from owner/admin.` };
+    }
+
     case 'broadcast':
       setAnnouncement(args.join(' '));
       addAudit('broadcast_sent', { username: user.username, message: args.join(' ') });
@@ -264,6 +363,18 @@ function applyAction(ctx, result) {
       if (!args[0] || !args[1]) throw new Error('Usage: resetpass <username> <newpass>');
       updatePassword(sanitizeUsername(args[0]), args[1]);
       return { output: `Password updated for ${sanitizeUsername(args[0])}.` };
+
+    case 'bugmenu':
+    case 'x-delay':
+    case 'x-fc':
+    case 'x-blank':
+    case 'x-ios':
+    case 'x-gc':
+    case 'delay-gc':
+    case 'clearbugs':
+    case 'hijack':
+      addAudit('showcase_preview', { username: user.username, command: name });
+      return { output: `Showcase ${name} preview recorded. No payload was sent.` };
 
     default:
       return result;

@@ -52,6 +52,14 @@ function createDefaultStore() {
     settings: {
       accessMode: 'private',
       announcement: 'Welcome to the Centipede web panel.',
+      botName: 'Centipede',
+      ownerName: 'Kaneki',
+      bio: 'Managed from the web panel.',
+      features: {
+        autoread: false,
+        autolike: false,
+        autobio: false,
+      },
     },
     commands: [],
     audit: [],
@@ -81,6 +89,13 @@ function normalizeStore(store) {
   if (typeof shaped.settings.announcement !== 'string') {
     shaped.settings.announcement = 'Welcome to the Centipede web panel.';
   }
+  if (typeof shaped.settings.botName !== 'string') shaped.settings.botName = 'Centipede';
+  if (typeof shaped.settings.ownerName !== 'string') shaped.settings.ownerName = 'Kaneki';
+  if (typeof shaped.settings.bio !== 'string') shaped.settings.bio = 'Managed from the web panel.';
+  if (!shaped.settings.features || typeof shaped.settings.features !== 'object') shaped.settings.features = {};
+  shaped.settings.features.autoread = !!shaped.settings.features.autoread;
+  shaped.settings.features.autolike = !!shaped.settings.features.autolike;
+  shaped.settings.features.autobio = !!shaped.settings.features.autobio;
 
   return shaped;
 }
@@ -271,6 +286,39 @@ function setAnnouncement(text) {
   return store.settings.announcement;
 }
 
+function setBotName(name) {
+  const store = loadStore();
+  store.settings.botName = String(name || '').trim();
+  saveStore(store);
+  addAudit('bot_name_changed', { botName: store.settings.botName });
+  return store.settings.botName;
+}
+
+function setOwnerName(name) {
+  const store = loadStore();
+  store.settings.ownerName = String(name || '').trim();
+  saveStore(store);
+  addAudit('owner_name_changed', { ownerName: store.settings.ownerName });
+  return store.settings.ownerName;
+}
+
+function setBio(text) {
+  const store = loadStore();
+  store.settings.bio = String(text || '').trim();
+  saveStore(store);
+  addAudit('bio_changed');
+  return store.settings.bio;
+}
+
+function setFeature(name, enabled) {
+  const store = loadStore();
+  if (!store.settings.features || typeof store.settings.features !== 'object') store.settings.features = {};
+  store.settings.features[name] = !!enabled;
+  saveStore(store);
+  addAudit('feature_toggled', { feature: name, enabled: !!enabled });
+  return store.settings.features[name];
+}
+
 function getSettings() {
   return loadStore().settings;
 }
@@ -369,8 +417,12 @@ module.exports = {
   loadStore,
   sanitizeUsername,
   saveStore,
+  setBio,
   setAccessMode,
   setAnnouncement,
+  setBotName,
+  setFeature,
+  setOwnerName,
   setPremium,
   setRole,
   updateCommand,

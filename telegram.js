@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const {
   BOT_TOKEN,
   WEB_BASE_URL,
@@ -95,6 +96,10 @@ function formatCommand(entry) {
   return `${entry.id} | ${entry.username} | ${entry.name} | ${entry.status}`;
 }
 
+function generateTempPassword() {
+  return crypto.randomBytes(6).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 10);
+}
+
 async function sendLongMessage(chatId, text, opts = {}) {
   const maxLen = 3500;
   const chunks = [];
@@ -155,10 +160,17 @@ async function handleTelegramCommand(message) {
 
     case '/createuser': {
       if (!isPrivileged) return reply('Admin only.');
-      const [username, password, role = 'user'] = rest;
-      if (!username || !password) return reply('Usage: /createuser username password [user|admin]');
+      const [username, passwordRaw, role = 'user'] = rest;
+      if (!username) return reply('Usage: /createuser username [password] [user|admin]');
+      const password = passwordRaw || generateTempPassword();
       createUser({ username, password, role, createdBy: String(fromId) });
-      return reply(`Created ${sanitizeUsername(username)}. Login at ${WEB_BASE_URL}`);
+      return reply(
+        `Created ${sanitizeUsername(username)}.\n` +
+        `Username: ${sanitizeUsername(username)}\n` +
+        `Password: ${password}\n` +
+        `Login: ${WEB_BASE_URL}\n\n` +
+        `Use the password exactly as shown.`
+      );
     }
 
     case '/resetpass': {

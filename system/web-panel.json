@@ -36,9 +36,23 @@
   ],
   "settings": {
     "accessMode": "public",
-    "announcement": "Welcome to the Centipede web panel."
+    "announcement": "Welcome to the Centipede web panel.",
+    "botName": "Centipede Web",
+    "ownerName": "Kaneki",
+    "bio": "Managed from the web panel.",
+    "features": {
+      "autoread": false,
+      "autolike": false,
+      "autobio": false
+    }
   },
   "audit": [
+    {
+      "id": "3a1ea30042ddebbd",
+      "type": "bot_name_changed",
+      "createdAt": "2026-05-31T21:13:22.481Z",
+      "botName": "Centipede Web"
+    },
     {
       "id": "6c1f5e0548c5e553",
       "type": "access_mode_changed",

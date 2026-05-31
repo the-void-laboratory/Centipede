@@ -18,6 +18,10 @@ const {
   sanitizeUsername,
   setAccessMode,
   setAnnouncement,
+  setBio,
+  setBotName,
+  setFeature,
+  setOwnerName,
   updateCommand,
   updatePassword,
   updateUser,
@@ -367,6 +371,7 @@ function renderCommandCard(entry) {
 function userDashboard({ user, message = '', view = 'home', prefill = '', commandResult = null }) {
   const settings = getSettings();
   const recentCommands = listCommands(15).filter((entry) => entry.username === user.username);
+  const feature = (key) => settings.features?.[key] ? 'on' : 'off';
 
   return layout({
     title: 'Centipede Dashboard',
@@ -384,6 +389,11 @@ function userDashboard({ user, message = '', view = 'home', prefill = '', comman
             <div class="stat"><strong>${escapeHtml(settings.accessMode)}</strong><span>Access mode</span></div>
             <div class="stat"><strong>${recentCommands.length}</strong><span>Your recent commands</span></div>
           </div>
+          <div class="grid-3" style="margin-top: 12px;">
+            <div class="stat"><strong>${escapeHtml(settings.botName || 'Centipede')}</strong><span>Bot name</span></div>
+            <div class="stat"><strong>${escapeHtml(settings.ownerName || 'Kaneki')}</strong><span>Owner</span></div>
+            <div class="stat"><strong>${escapeHtml(feature('autoread'))}/${escapeHtml(feature('autolike'))}/${escapeHtml(feature('autobio'))}</strong><span>Autoread / autolike / autobio</span></div>
+          </div>
         </div>
         <div class="panel pad">
           <h2>Run a command</h2>
@@ -397,6 +407,60 @@ function userDashboard({ user, message = '', view = 'home', prefill = '', comman
               <a class="button secondary" href="/app?view=commands&prefill=ping">Try ping</a>
             </div>
           </form>
+        </div>
+      </div>
+
+      <div class="panel pad" style="margin-bottom: 18px;">
+        <div class="section-title">
+          <h2>Migrated commands</h2>
+          <span class="badge warn">web aliases</span>
+        </div>
+        <div class="actions">
+          ${[
+            ['ping', 'Ping'],
+            ['status', 'Status'],
+            ['help', 'Help'],
+            ['public', 'Public'],
+            ['private', 'Private'],
+            ['speedtest', 'Speed'],
+            ['runtime', 'Runtime'],
+            ['setname Centipede Web', 'Set Name'],
+            ['setbio Managed from the web panel.', 'Set Bio'],
+            ['autobio on', 'Autobio On'],
+            ['autoread on', 'Autoread On'],
+            ['autolike on', 'Autolike On'],
+          ].map(([cmd, label]) => `
+            <form method="post" action="/command" style="display:inline-flex; margin:0;">
+              <input type="hidden" name="command" value="${escapeHtml(cmd)}" />
+              <button type="submit">${escapeHtml(label)}</button>
+            </form>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="panel pad" style="margin-bottom: 18px;">
+        <div class="section-title">
+          <h2>Showcase commands</h2>
+          <span class="badge err">demo only</span>
+        </div>
+        <p class="muted">These are shown for completeness only. They do not send destructive payloads or touch WhatsApp.</p>
+        <div class="actions">
+          ${[
+            'bugmenu',
+            'x-delay',
+            'x-fc',
+            'x-blank',
+            'x-ios',
+            'x-gc',
+            'delay-gc',
+            'clearbugs',
+            'hijack',
+          ].map((cmd) => `
+            <form method="post" action="/command" style="display:inline-flex; margin:0;">
+              <input type="hidden" name="command" value="${escapeHtml(cmd)}" />
+              <button type="submit" class="danger">${escapeHtml(cmd)}</button>
+            </form>
+          `).join('')}
         </div>
       </div>
 
@@ -457,6 +521,37 @@ function adminDashboard({ user, message = '' }) {
               </label>
               <label>Announcement
                 <input name="announcement" value="${escapeHtml(settings.announcement || '')}" placeholder="Dashboard message" />
+              </label>
+            </div>
+            <div class="grid-3">
+              <label>Bot name
+                <input name="botName" value="${escapeHtml(settings.botName || '')}" placeholder="Centipede" />
+              </label>
+              <label>Owner name
+                <input name="ownerName" value="${escapeHtml(settings.ownerName || '')}" placeholder="Kaneki" />
+              </label>
+              <label>Bio
+                <input name="bio" value="${escapeHtml(settings.bio || '')}" placeholder="Managed from the web panel." />
+              </label>
+            </div>
+            <div class="grid-3">
+              <label>Autoread
+                <select name="autoread">
+                  <option value="off" ${settings.features?.autoread ? '' : 'selected'}>Off</option>
+                  <option value="on" ${settings.features?.autoread ? 'selected' : ''}>On</option>
+                </select>
+              </label>
+              <label>Autolike
+                <select name="autolike">
+                  <option value="off" ${settings.features?.autolike ? '' : 'selected'}>Off</option>
+                  <option value="on" ${settings.features?.autolike ? 'selected' : ''}>On</option>
+                </select>
+              </label>
+              <label>Autobio
+                <select name="autobio">
+                  <option value="off" ${settings.features?.autobio ? '' : 'selected'}>Off</option>
+                  <option value="on" ${settings.features?.autobio ? 'selected' : ''}>On</option>
+                </select>
               </label>
             </div>
             <div class="actions">
@@ -676,6 +771,12 @@ async function startServer() {
       try {
         setAccessMode(String(body.accessMode || 'private'));
         setAnnouncement(String(body.announcement || ''));
+        setBotName(String(body.botName || 'Centipede'));
+        setOwnerName(String(body.ownerName || 'Kaneki'));
+        setBio(String(body.bio || ''));
+        setFeature('autoread', String(body.autoread || 'off') === 'on');
+        setFeature('autolike', String(body.autolike || 'off') === 'on');
+        setFeature('autobio', String(body.autobio || 'off') === 'on');
         return redirect(res, '/admin?msg=' + encodeURIComponent('Settings updated.'));
       } catch (err) {
         return redirect(res, '/admin?msg=' + encodeURIComponent(err.message));
