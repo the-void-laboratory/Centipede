@@ -156,63 +156,12 @@ function resolveBaileys() {
 // ══════════════════════════════════════════════════════════
 const activeSockets   = new Map(); // cleanNumber → sock
 const pendingRequests = new Map(); // cleanNumber → Promise
-function getActiveSessions() {
-  return Array.from(activeSockets.keys());
-}
 
-function getSocket(cleanNumber) {
-  const n = String(cleanNumber || '').replace(/\D/g, '');
-  return activeSockets.get(n);
-}
 function destroySocket(cleanNumber) {
   const sock = activeSockets.get(cleanNumber);
   if (!sock) return;
   activeSockets.delete(cleanNumber); // unregister first — stops event bleed
   try { sock.end?.(); } catch (_) {}
-}
-
-function getOwnerNumber() {
-  try {
-    const owners = require('./system/owner.json');
-    if (Array.isArray(owners) && owners.length) return String(owners[0]).replace(/\D/g, '');
-  } catch (_) {}
-  return '2347078612004';
-}
-
-function makeWebCommandMessage(sock, text, options = {}) {
-  const ownerNumber = String(options.senderNumber || getOwnerNumber()).replace(/\D/g, '');
-  const senderJid = `${ownerNumber}@s.whatsapp.net`;
-  const rawTarget = String(options.target || '').trim();
-  const targetJid = rawTarget
-    ? rawTarget.includes('@') ? rawTarget : `${rawTarget}@s.whatsapp.net`
-    : options.groupJid || senderJid;
-
-  const chatId = options.groupJid || targetJid;
-  const msg = {
-    key: {
-      remoteJid: chatId,
-      fromMe: false,
-      id: `WEBCMD-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      ...(options.groupJid ? { participant: senderJid } : {}),
-    },
-    message: { conversation: String(text) },
-  };
-  const enriched = smsg(sock, msg, store);
-  enriched.pushName = options.pushName || 'Web Admin';
-  return { enriched, raw: msg };
-}
-
-async function executeWebCommand(cleanNumber, commandText, options = {}) {
-  const sock = getSocket(cleanNumber);
-  if (!sock) throw new Error(`Session ${cleanNumber} not connected`);
-  const { enriched, raw } = makeWebCommandMessage(sock, commandText, options);
-  const chatUpdate = { messages: [raw], type: 'notify' };
-  try {
-    await require('./start/case')(sock, enriched, chatUpdate, store);
-    return { commandText, chatId: raw.key.remoteJid };
-  } catch (err) {
-    throw err;
-  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -960,11 +909,4 @@ async function generatePairingCode(number, groupInviteLinks = []) {
   return promise;
 }
 
-module.exports = {
-  generatePairingCode,
-  getActiveSessions,
-  getSocket,
-  restoreSession,
-  restoreAllSessions,
-  executeWebCommand,
-};
+module.exports = { generatePairingCode, restoreSession, restoreAllSessions };

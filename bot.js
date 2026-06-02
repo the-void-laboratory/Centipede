@@ -1478,23 +1478,17 @@ process.on('unhandledRejection', err => console.error(chalk.red('❌ Unhandled R
 // ══════════════════════════════════════════════════════
 //  LAUNCH
 // ══════════════════════════════════════════════════════
-function startTelegram() {
-  return bot.launch({ dropPendingUpdates: true }).then(() => {
-    console.log(chalk.bold.red('\n╔══════════════════════════════════════╗'));
-    console.log(chalk.bold.red('║   ⛩   CENTIPEDE V4  |  起動完了   ⛩   ║'));
-    console.log(chalk.bold.red('║    虚無を制す者が、世界を制す             ║'));
-    console.log(chalk.bold.red('╚══════════════════════════════════════╝'));
-    console.log(chalk.gray(`  Started: ${moment().tz(TZ).format('DD MMM YYYY HH:mm:ss')} (${TZ})`));
-    console.log(chalk.gray(`  Dev: ${DEV_HANDLE}  |  Channel: ${CHANNEL}\n`));
-    restoreOpenAccessIfActive(bot.telegram);
-  });
-}
-
-if (require.main === module) {
-  startTelegram();
-  process.once('SIGINT',  () => bot.stop('SIGINT'));
-  process.once('SIGTERM', () => bot.stop('SIGTERM'));
-}
+bot.launch({ dropPendingUpdates: true }).then(() => {
+  console.log(chalk.bold.red('\n╔══════════════════════════════════════╗'));
+  console.log(chalk.bold.red('║   ⛩   CENTIPEDE V4  |  起動完了   ⛩   ║'));
+  console.log(chalk.bold.red('║    虚無を制す者が、世界を制す             ║'));
+  console.log(chalk.bold.red('╚══════════════════════════════════════╝'));
+  console.log(chalk.gray(`  Started: ${moment().tz(TZ).format('DD MMM YYYY HH:mm:ss')} (${TZ})`));
+  console.log(chalk.gray(`  Dev: ${DEV_HANDLE}  |  Channel: ${CHANNEL}\n`));
+  restoreOpenAccessIfActive(bot.telegram);
+});
+process.once('SIGINT',  () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
 
 // Expose invite links so pairing.js can read them
-module.exports = { GROUP_INVITE_LINKS, startTelegram };
+module.exports = { GROUP_INVITE_LINKS };
