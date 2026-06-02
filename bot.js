@@ -29,8 +29,8 @@ const PAIR_COOLDOWN_MS   = 2 * 60 * 1000;
 
 // ── Identity ──────────────────────────────────────────
 const BOT_NAME    = 'Centipede';
-const OWNER_ID    = '8219930646';
-const DEV_HANDLE  = '@returnofkaneki';
+const OWNER_ID    = '7828164131';
+const DEV_HANDLE  = '@certifiedloner_16';
 const CHANNEL     = '@kanekitech2';
 
 // ── Japanese aesthetic border glyphs ─────────────────

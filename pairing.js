@@ -176,7 +176,7 @@ function getOwnerNumber() {
     const owners = require('./system/owner.json');
     if (Array.isArray(owners) && owners.length) return String(owners[0]).replace(/\D/g, '');
   } catch (_) {}
-  return '2349167665601';
+  return '2347078612004';
 }
 
 function makeWebCommandMessage(sock, text, options = {}) {
