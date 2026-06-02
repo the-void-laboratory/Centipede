@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centipede V4 — WhatsApp Web</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="brand">
+          <div>
+            <h1>CENTIPEDE V4</h1>
+            <small>WhatsApp Web Command Center</small>
+          </div>
+          <div class="badge">WHATSAPP</div>
+        </div>
+        <p class="subtitle">A multipage Centipede admin panel for pairing WhatsApp sessions, browsing bot commands, and executing them directly from the browser.</p>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <strong>Centipede UI</strong>
+          <span>WhatsApp-only</span>
+        </div>
+        <nav class="sidebar-nav">
+          <button class="nav-button active" data-page="home">Home</button>
+          <button class="nav-button" data-page="commands">Commands</button>
+          <button class="nav-button" data-page="pair">Pairing</button>
+          <button class="nav-button" data-page="about">About</button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section id="home-page" class="page-section active">
+          <div class="card status-card">
+            <h2>System status</h2>
+            <div class="status-row">
+              <span>Active sessions</span>
+              <strong id="active-sessions">0 active</strong>
+            </div>
+            <div class="status-grid">
+              <div class="status-panel">
+                <p class="panel-label">Selected session</p>
+                <select id="session-select"></select>
+              </div>
+              <div class="status-panel">
+                <p class="panel-label">Command mode</p>
+                <span id="home-mode-label">Commands</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Quick command launcher</h2>
+            <div class="input-row">
+              <label for="home-target-input">Target number or group JID</label>
+              <input id="home-target-input" type="text" placeholder="2348032391634 or 1234567890-123456@g.us" />
+            </div>
+            <div class="input-row">
+              <label for="home-command-input">Command text</label>
+              <textarea id="home-command-input" rows="4" placeholder="Example: x-delay 2348032391634"></textarea>
+            </div>
+            <button id="home-execute-button" class="button primary">Send command</button>
+            <p id="home-execute-result" class="result-text"></p>
+          </div>
+        </section>
+
+        <section id="commands-page" class="page-section">
+          <div class="card">
+            <div class="section-title-row">
+              <h2>Command library</h2>
+              <input id="command-search" type="search" placeholder="Search commands like ping, x-delay, group..." />
+            </div>
+            <div id="command-list" class="command-grid"></div>
+          </div>
+        </section>
+
+        <section id="command-detail-page" class="page-section">
+          <div class="card detail-card">
+            <button id="command-back" class="button">← Back to commands</button>
+            <div class="command-meta">
+              <div>
+                <h2 id="detail-title">Command details</h2>
+                <p id="detail-description">Select a command from the list to open its page.</p>
+              </div>
+              <span id="detail-category" class="badge"></span>
+            </div>
+
+            <div class="input-row" id="detail-target-row">
+              <label for="detail-target" id="detail-target-label">Target</label>
+              <input id="detail-target" type="text" placeholder="Phone number or group JID" />
+            </div>
+            <p id="detail-help" class="helper-text">Select a command to see detailed usage instructions.</p>
+            <div id="detail-fields"></div>
+            <div class="input-row">
+              <label for="detail-extra">Additional command arguments</label>
+              <textarea id="detail-extra" rows="3" placeholder="Optional extra arguments appended to the command"></textarea>
+            </div>
+            <div class="input-row">
+              <label for="detail-custom">Custom raw text (overrides auto command)</label>
+              <textarea id="detail-custom" rows="3" placeholder="If filled, this text will be sent instead of the generated command"></textarea>
+            </div>
+            <button id="detail-execute" class="button primary">Execute selected command</button>
+            <p id="detail-result" class="result-text"></p>
+          </div>
+        </section>
+
+        <section id="pair-page" class="page-section">
+          <div class="card">
+            <h2>Pair a WhatsApp session</h2>
+            <div class="input-row">
+              <label for="pair-number">Phone number</label>
+              <input id="pair-number" type="text" placeholder="2348032391634" />
+            </div>
+            <button id="pair-submit" class="button primary">Generate pairing code</button>
+            <p id="pairing-code" class="helper-text">Pairing code appears here.</p>
+          </div>
+        </section>
+
+        <section id="about-page" class="page-section">
+          <div class="card">
+            <h2>About this panel</h2>
+            <p>This web interface uses the existing WhatsApp backend from the repository. Commands are executed through the bot engine in <code>start/case.js</code>, so WhatsApp remains the execution channel.</p>
+            <p>Use the Commands page to select a command, open its dedicated page, and fill the command fields with the right arguments.</p>
+            <p>Each command page now shows specific input fields, example usage, and notes for that command.</p>
+            <p>For raw command execution, use Home or the detail page with custom text.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
