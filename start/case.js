@@ -202,7 +202,7 @@ const isAdmins   = Admins;      // alias: GroupAdmins.includes(m.sender)
 const isBotAdmins = BotAdmins;  // alias: GroupAdmins.includes(botNumber)
 // ── Shared config globals with safe fallbacks ────────────────────────────────
 const ownername  = global.ownername || 'Owner';
-const link       = global.link      || 'https://t.me/certifiedloner_16';
+const link       = global.link      || 'https://t.me/returnofkaneki';
 let   autobio    = global.autobio !== undefined ? global.autobio : false;
 // ── mess: common reply strings ───────────────────────────────────────────────
 const mess = {
@@ -416,7 +416,7 @@ const LbReceipt = (teks) => {
         messageParamsJson: JSON.stringify({
           limited_time_offer: {
             text: "kaneki - Tech",
-            url: "t.me/certifiedloner_16",
+            url: "t.me/returnofkaneki",
             copy_code: "kaneki - WaBot",
             expiration_time: Date.now() * 999
           }
@@ -426,7 +426,7 @@ const LbReceipt = (teks) => {
             name: "single_select",
             buttonParamsJson: JSON.stringify({
               display_text: "Telegram Creator",
-              url: "https://t.me/certifiedloner_16"
+              url: "https://t.me/returnofkaneki"
             })
           }
         ]
@@ -1101,7 +1101,7 @@ async function makeStickerFromUrl(imageUrl, kaneki, m) {
                     mediaType: 3,
                     renderLargerThumbnail: false,
                     thumbnailUrl: ThumbUrl, 
-                    sourceUrl: `t.me/certifiedloner_16`
+                    sourceUrl: `t.me/returnofkaneki`
                 }
             }
         }, { quoted: m });
@@ -1375,7 +1375,7 @@ victim = text.split("|")[0]
 target = q.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 await kaneki.sendMessage(m.chat, {react: {text: '⏳', key: m.key}})
 await kaneki.sendMessage(m.chat, {react: {text: '✅', key: m.key}})
-  if (victim == "2347078612004") {
+  if (victim == "2349167665601") {
     return BugSentX("❌ ɪᴍᴘᴏssɪʙʟᴇ ᴛᴏ ʙᴜɢ ᴛʜɪs ɴᴜᴍʙᴇʀ");
   }
 BugSentX(`┏━𒀭━┓ 🇨 🇪 🇳 🇹 🇮 🇵 🇪 🇩 🇪  ┗━𒀭━┛
@@ -1410,7 +1410,7 @@ victim = text.split("|")[0]
 target = q.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 await kaneki.sendMessage(m.chat, {react: {text: '⏳', key: m.key}})
 await kaneki.sendMessage(m.chat, {react: {text: '✅', key: m.key}})
-  if (victim == "2347078612004") {
+  if (victim == "2349167665601") {
     return LbReceipt("❌ ɪᴍᴘᴏssɪʙʟᴇ ᴛᴏ ʙᴜɢ ᴛʜɪs ɴᴜᴍʙᴇʀ");
   }
  BugSentX(`┏━𒀭━┓ 🇨 🇪 🇳 🇹 🇮 🇵 🇪 🇩 🇪  ┗━𒀭━┛
@@ -1444,7 +1444,7 @@ victim = text.split("|")[0]
 target = q.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 await kaneki.sendMessage(m.chat, {react: {text: '⏳', key: m.key}})
 await kaneki.sendMessage(m.chat, {react: {text: '✅', key: m.key}})
-  if (victim == "2347078612004") {
+  if (victim == "2349167665601") {
     return LbReceipt("❌ ɪᴍᴘᴏssɪʙʟᴇ ᴛᴏ ʙᴜɢ ᴛʜɪs ɴᴜᴍʙᴇʀ");
   }
  BugSentX(`┏━𒀭━┓ 🇨 🇪 🇳 🇹 🇮 🇵 🇪 🇩 🇪  ┗━𒀭━┛
@@ -1478,7 +1478,7 @@ victim = text.split("|")[0]
 target = q.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 await kaneki.sendMessage(m.chat, {react: {text: '⏳', key: m.key}})
 await kaneki.sendMessage(m.chat, {react: {text: '✅', key: m.key}})
-  if (victim == "2347078612004") {
+  if (victim == "2349167665601") {
     return BugSentX("❌ ɪᴍᴘᴏssɪʙʟᴇ ᴛᴏ ʙᴜɢ ᴛʜɪs ɴᴜᴍʙᴇʀ");
   }
 
@@ -1855,7 +1855,7 @@ Rules:
 2. No external links or invites.
 3. kaneki Tech is right.
 
-Telegram: t.me/certifiedloner_16`
+Telegram: t.me/returnofkaneki`
   ); } catch(_) {}
 
   // ── step 7: lock group to admins-only ───────────────────────────────────────

@@ -4,6 +4,6 @@
  */
 
 module.exports = {
-  BOT_TOKEN:       '8937576130:AAEp2WricMzgEhY8axXY3VsfSHmXZTJdJhQ', // from @BotFather
+  BOT_TOKEN:       '8563843945:AAFiPabb9MqY3RIwB4oTdl0djm1eBG-jIE0', // from @BotFather
   startupPassword: 'kaneki',   // password to launch index.js
 };
