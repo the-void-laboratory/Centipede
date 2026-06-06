@@ -1584,7 +1584,7 @@ case "device": case "checkdevice": {
         else device = "I P H O N E";
     }
 
-    // ===== RADIATION RESPONSE STYLE =====
+    // ===== Poisoin RESPONSE STYLE =====
     const deviceText = `-(☘️) DEVICE CHECK\n@${number}\nDevice: *${device}*`;
 
     await kaneki.sendMessage(from, {
@@ -2556,7 +2556,7 @@ case 'ai': {
     }, {
       headers: {
         "Accept": "*/*",
-        "User-Agent": "RadiationMD WhatsApp Bot"
+        "User-Agent": "PoisoinMD WhatsApp Bot"
       }
     });
 
@@ -2590,7 +2590,7 @@ case 'radiateai': {
     }, {
       headers: {
         "Accept": "*/*",
-        "User-Agent": "Radiation WhatsApp Bot"
+        "User-Agent": "Poisoin WhatsApp Bot"
       }
     });
 
@@ -2599,7 +2599,7 @@ case 'radiateai': {
     }, { quoted: m });
 
   } catch (e) {
-    await m.reply(`radiation had an error: ${e.message}`);
+    await m.reply(`Poisoin had an error: ${e.message}`);
   }
 }
 break;
